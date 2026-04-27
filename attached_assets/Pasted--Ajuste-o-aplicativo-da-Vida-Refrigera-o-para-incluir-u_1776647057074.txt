@@ -1,0 +1,96 @@
+}
+Ajuste o aplicativo da Vida Refrigeração para incluir um módulo separado e organizado de clientes, sem interferir ou quebrar as funcionalidades já existentes do sistema.
+
+IMPORTANTE:
+- Não alterar a estrutura atual das ordens de serviço
+- Não misturar dados de clientes com outras áreas
+- Criar um módulo independente de clientes
+- Apenas integrar com a OS de forma segura e controlada
+
+OBJETIVO
+Criar uma aba chamada "Clientes" com cadastro completo e estruturado, incluindo CPF/CNPJ, para uso profissional e integração com ordens de serviço.
+
+1. CRIAR MÓDULO DE CLIENTES
+- Criar uma aba independente chamada "Clientes"
+- Essa área deve ser separada das demais (OS, agenda, equipe)
+- Estrutura organizada e modular
+- Não interferir nas outras partes do sistema
+
+2. CAMPOS DO CLIENTE
+Cada cliente deve conter:
+
+IDENTIFICAÇÃO:
+- nome completo ou razão social
+- CPF ou CNPJ (campo obrigatório para cadastro)
+- tipo de cliente:
+  - pessoa física
+  - pessoa jurídica
+
+CONTATO:
+- telefone
+- e-mail
+
+ENDEREÇO:
+- CEP
+- endereço
+- número
+- complemento
+- bairro
+- cidade
+- estado
+
+OUTROS:
+- localização opcional
+- observações
+- status (ativo/inativo)
+- origem (manual ou integração futura com Conta Azul)
+
+3. VALIDAÇÃO CPF/CNPJ
+- validar formato de CPF ou CNPJ
+- impedir cadastro inválido
+- garantir que não haja duplicidade de clientes
+
+4. ORGANIZAÇÃO DO SISTEMA
+- manter esse módulo totalmente separado
+- não misturar com equipe ou OS
+- cada módulo deve ter sua responsabilidade
+
+5. INTEGRAÇÃO COM ORDEM DE SERVIÇO
+- ao criar uma OS, permitir selecionar um cliente cadastrado
+- ao selecionar o cliente, preencher automaticamente:
+  - nome
+  - telefone
+  - endereço
+- permitir editar manualmente se necessário
+- manter compatibilidade com OS já existentes
+
+6. BUSCA INTELIGENTE
+- permitir busca por:
+  - nome
+  - telefone
+  - CPF/CNPJ
+- autocomplete rápido
+
+7. CONTROLE DE PERMISSÕES
+- respeitar sistema de permissões existente
+- permitir ao administrador definir:
+  - quem pode visualizar clientes
+  - quem pode cadastrar
+  - quem pode editar
+- por padrão, restringir edição para usuários comuns
+
+8. PREVENÇÃO DE ERROS
+- não duplicar clientes automaticamente
+- criar lógica de verificação por:
+  - CPF/CNPJ
+  - telefone
+
+9. DESEMPENHO
+- manter carregamento leve
+- não impactar performance do app
+- carregar clientes sob demanda
+
+10. IMPORTANTE
+- preservar todo o sistema atual (OS, agenda, equipe, permissões)
+- não quebrar nenhuma funcionalidade existente
+- manter arquitetura organizada e preparada para cresciment

@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Vida Refrigeração"
+version = "1.0.0"
+id = "artifacts/vida-refrigeracao"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22026
+
+[services.development]
+run = "pnpm --filter @workspace/vida-refrigeracao run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vida-refrigeracao", "run", "build" ]
+publicDir = "artifacts/vida-refrigeracao/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22026"
+BASE_PATH = "/"

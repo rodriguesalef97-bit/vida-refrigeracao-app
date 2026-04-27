@@ -1,0 +1,50 @@
+modules = ["nodejs-24", "postgresql-16"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
+
+[[ports]]
+localPort = 8081
+externalPort = 8081
+
+[[ports]]
+localPort = 8082
+externalPort = 3002
+
+[[ports]]
+localPort = 22026
+externalPort = 3000
+
+[[ports]]
+localPort = 22027
+externalPort = 3001
+
+[userenv]
+
+[userenv.shared]
+VAPID_PUBLIC_KEY = "BC5Qn5sY1nU9GeoD-AMYc94h2zXATFSwLczlIdAWM1r04Pb4-qjPbIHuZV9mgapK7Lf4J3ZXoLuFKnztiZDOdk8"
+VAPID_PRIVATE_KEY = "RoYEaCrfg8g2d9UrpmH50Ck9BCCFfu-wu5aOz5D55fs"
+VAPID_SUBJECT = "mailto:contato@vidarefrigeracao.local"

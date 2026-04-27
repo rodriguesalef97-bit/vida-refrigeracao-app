@@ -1,0 +1,101 @@
+Analise o aplicativo atual da Vida Refrigeração e faça uma revisão completa de desempenho no celular e de controle de permissões por tela, por aba e por ação.
+
+IMPORTANTE:
+Preserve tudo o que já funciona e corrija a estrutura sem quebrar o sistema.
+
+OBJETIVO 1 — MELHORAR A VELOCIDADE E O CARREGAMENTO NO CELULAR
+O aplicativo está demorando muito para abrir e carregar no celular. Quero que ele fique mais rápido, leve e estável, especialmente em iPhone.
+
+Faça os seguintes ajustes de desempenho:
+- revisar toda a estrutura do app para melhorar o carregamento inicial
+- reduzir chamadas desnecessárias ao backend
+- aplicar carregamento sob demanda (lazy loading) nas telas e abas
+- carregar apenas o que for necessário ao abrir o app
+- evitar carregar todas as áreas de uma vez
+- otimizar componentes pesados
+- otimizar a renderização no celular
+- revisar imagens, listas e dados para reduzir peso
+- melhorar a experiência mobile first
+- revisar a PWA para abrir com mais rapidez
+- adicionar estados de carregamento claros
+- evitar travamentos e demora excessiva ao abrir novas telas
+- deixar o aplicativo mais rápido e fluido para uso diário em campo
+
+OBJETIVO 2 — REESTRUTURAR PERMISSÕES DO SISTEMA
+Hoje, ao abrir pelo celular com um novo usuário, como exemplo Mariana, algumas abas não carregam corretamente e está sendo possível visualizar e editar a área de equipe/colaboradores, o que não pode acontecer.
+
+Quero corrigir isso completamente.
+
+REGRAS GERAIS:
+- nenhum colaborador comum deve ter acesso à edição da área de equipe/colaboradores, salvo se o administrador principal autorizar
+- toda aba do sistema, atual ou futura, deve ter controle de autorização
+- toda funcionalidade deve depender de permissão do administrador principal
+- a permissão deve ser aplicada no frontend e no backend
+- esconder botão não é suficiente; é preciso bloquear o acesso real
+
+ESTRUTURA DE PERMISSÕES:
+Crie um sistema de permissões detalhadas por usuário ou por perfil.
+
+Cada usuário deve poder ter permissões específicas para:
+- visualizar painel inicial
+- visualizar ordens de serviço
+- editar ordens de serviço
+- concluir ordens de serviço
+- visualizar agenda/calendário
+- editar agenda/calendário
+- visualizar equipe/colaboradores
+- editar equipe/colaboradores
+- visualizar clientes
+- editar clientes
+- visualizar financeiro
+- editar financeiro
+- visualizar vendas
+- editar vendas
+- visualizar comercial
+- editar comercial
+- visualizar relatórios
+- gerenciar usuários
+- gerenciar permissões
+- acessar configurações administrativas
+
+PAINEL DE CONTROLE DE ACESSO
+Criar uma área administrativa chamada "Permissões" ou "Controle de Acesso", onde o administrador principal possa:
+- visualizar todos os usuários cadastrados
+- visualizar o perfil de cada usuário
+- ativar ou desativar acessos por área
+- definir exatamente o que cada usuário pode visualizar
+- definir exatamente o que cada usuário pode editar
+- alterar permissões a qualquer momento
+- aplicar permissões individuais, mesmo dentro do mesmo perfil
+
+RESTRIÇÃO DA ÁREA DE EQUIPE / COLABORADORES
+- a área de equipe/colaboradores não deve ficar acessível para técnicos ou usuários comuns, a menos que o administrador libere
+- por padrão, essa área deve ficar restrita
+- remover qualquer possibilidade de edição dessa área para usuários sem autorização
+
+CORREÇÃO DO CASO DE NOVOS MEMBROS
+- revisar o fluxo de criação de novos usuários
+- garantir que novos usuários recebam permissões corretas desde o cadastro
+- evitar que usuário recém-criado fique com acessos incorretos ou incompletos
+- corrigir o problema em que o usuário só consegue visualizar/editar equipe e não carrega OS e agenda corretamente
+
+CARGA DAS ABAS
+- garantir que as abas do app carreguem conforme a permissão do usuário
+- se o usuário não tiver acesso a uma aba, ela não deve aparecer
+- se tiver acesso, ela deve carregar normalmente e com rapidez
+- revisar por que algumas áreas não estão carregando no celular
+
+SEGURANÇA
+- aplicar verificações de autorização no backend
+- bloquear rotas, telas e ações sem permissão
+- impedir acesso indevido mesmo que o usuário tente acessar pela URL ou rota direta
+
+INTERFACE
+- manter visual profissional, limpo e rápido
+- manter identidade azul, cinza e branco
+- priorizar uso no celular
+
+IMPORTANTE
+- preserve login, OS, fotos, checklist, assinaturas, calendário e cadastros já existentes
+- apenas reorganize a arquitetura para desempenho e permissão
+- quero um sistema estável, rápido e com controle total do administrador principal

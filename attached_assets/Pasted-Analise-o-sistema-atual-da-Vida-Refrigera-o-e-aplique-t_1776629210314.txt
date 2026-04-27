@@ -1,0 +1,151 @@
+Analise o sistema atual da Vida Refrigeração e aplique todas as melhorias abaixo sem quebrar nenhuma funcionalidade que já esteja funcionando. Preserve o que já existe e apenas amplie o sistema, deixando-o mais profissional, estável e pronto para uso real em campo.
+
+Quero transformar este app em um sistema operacional completo para equipe técnica, com foco em ordens de serviço, agenda diária, controle de execução e uso no celular.
+
+APLIQUE OS SEGUINTES AJUSTES:
+
+1. FOTO DO SERVIÇO OBRIGATÓRIA
+- O campo de foto do serviço deve ser obrigatório
+- Não permitir salvar nem concluir a ordem de serviço sem pelo menos 1 foto anexada
+- Exibir mensagem clara de erro quando faltar foto
+- Permitir anexar múltiplas fotos
+- Destacar visualmente o campo de foto quando estiver vazio
+
+2. OBSERVAÇÃO OBRIGATÓRIA
+- O campo de observações deve ser obrigatório para concluir a OS
+- Não permitir concluir a ordem de serviço sem descrição clara do que foi realizado
+- Usar um campo de texto grande, confortável para digitação no celular
+- A observação deve servir como registro detalhado do serviço executado
+
+3. CHECKLIST OPERACIONAL OBRIGATÓRIO
+- Adicionar checklist com caixas de seleção
+- O checklist deve ser obrigatório para conclusão da OS
+- O checklist deve poder ser adaptado conforme o tipo de serviço
+- Exemplo de etapas do checklist:
+- conferência inicial
+- execução do serviço
+- teste final
+- limpeza e organização do local
+- registro fotográfico
+- Permitir marcar todos os itens pelo celular de forma fácil
+
+4. ASSINATURA DO TÉCNICO
+- Adicionar campo de assinatura digital do técnico responsável
+- A assinatura do técnico deve ser obrigatória para concluir a ordem de serviço
+- A assinatura deve poder ser feita desenhando com o dedo na tela
+- Salvar a assinatura junto da OS concluída
+
+5. ASSINATURA DO CLIENTE
+- Adicionar campo de assinatura digital do cliente
+- A assinatura do cliente deve ser opcional
+- Exibir o texto: "Assinatura do cliente (opcional)"
+- O cliente deve poder assinar com o dedo na tela
+- Salvar a assinatura do cliente quando preenchida
+
+6. REGRAS DE VALIDAÇÃO PARA CONCLUSÃO DA OS
+- Não permitir concluir a ordem de serviço se faltar qualquer um dos itens obrigatórios:
+- pelo menos 1 foto anexada
+- observação preenchida
+- checklist concluído
+- assinatura do técnico
+- Exibir mensagens de validação claras e objetivas
+- O botão "Concluir OS" deve ficar bloqueado ou exibir alerta até que todos os itens obrigatórios estejam preenchidos
+
+7. CAMPOS DA ORDEM DE SERVIÇO
+- Manter os campos já existentes:
+- nome do cliente
+- telefone
+- endereço
+- tipo de serviço
+- capacidade do equipamento
+- técnico responsável
+- data agendada
+- observações
+- fotos do serviço
+- Organizar melhor esses campos para uso no celular
+- Deixar os campos grandes, bem espaçados e simples de preencher
+- Manter o formulário limpo e profissional
+
+8. LISTAGEM DAS ORDENS DE SERVIÇO
+- Exibir lista de ordens de serviço com status:
+- aberta
+- em andamento
+- concluída
+- Permitir editar OS
+- Permitir visualizar detalhes completos da OS
+- Mostrar se a OS possui:
+- fotos
+- assinatura do técnico
+- assinatura do cliente
+- checklist concluído
+
+9. PAINEL INICIAL
+- Manter um painel inicial com resumo:
+- total de OS abertas
+- total de OS em andamento
+- total de OS concluídas
+- Layout limpo, moderno e profissional
+
+10. CALENDÁRIO OPERACIONAL POR TÉCNICO
+- Adicionar uma nova aba chamada "Calendário" ou "Agenda"
+- Nessa aba, cada técnico deve conseguir visualizar os serviços agendados por dia
+- O calendário deve mostrar as ordens de serviço organizadas por data
+- O usuário deve poder clicar em um dia específico, por exemplo segunda-feira, e visualizar tudo o que está programado naquele dia
+- O calendário deve permitir filtrar ou visualizar os serviços por técnico responsável
+- Cada técnico deve conseguir entender claramente o que será feito no dia e quais OS estão sob sua responsabilidade
+- Exibir informações importantes de cada agendamento, como:
+- nome do cliente
+- endereço
+- tipo de serviço
+- horário, se existir
+- técnico responsável
+- status da OS
+- O calendário deve funcionar bem no celular
+- Se possível, criar visualização por:
+- dia
+- semana
+- lista de agendamentos
+- Priorizar simplicidade e clareza visual
+
+11. ABA OU ÁREA DE VISUALIZAÇÃO POR TÉCNICO
+- Criar uma área em que seja possível visualizar a agenda de cada técnico separadamente
+- O técnico deve conseguir entrar no app e entender rapidamente:
+- quais serviços ele fará no dia
+- quais serviços estão agendados para ele na semana
+- quais OS estão em andamento
+- quais ainda não foram concluídas
+- Essa área deve ser simples, objetiva e prática para uso no campo
+
+12. ORGANIZAÇÃO DA ROTINA OPERACIONAL
+- O app deve ajudar a equipe a entender a programação diária
+- O técnico deve conseguir olhar rapidamente o que tem para fazer no dia sem depender de outra ferramenta externa
+- O sistema deve servir também como agenda operacional interna
+
+13. MELHORIA DE DESIGN
+- Melhorar o design para ficar com aparência de sistema profissional
+- Utilizar identidade visual nas cores azul, cinza e branco
+- Interface limpa, moderna e organizada
+- Priorizar mobile first
+- Pensar na experiência de técnicos usando o sistema na rua, durante atendimentos
+
+14. TRANSFORMAR EM APLICATIVO INSTALÁVEL NO CELULAR
+- Transformar o sistema em uma PWA (Progressive Web App)
+- Configurar web app manifest
+- Configurar service worker básico
+- Permitir instalação pelo navegador com a opção "Adicionar à Tela de Início"
+- Abrir em modo standalone, com aparência de aplicativo real
+- Nome do app: Vida Refrigeração
+- Adicionar ícone do aplicativo
+- Otimizar para uso no celular
+
+15. EXPERIÊNCIA DE USO
+- O sistema deve ser rápido, simples e funcional
+- Pensado para uso diário da equipe técnica
+- Fácil de preencher e consultar durante o atendimento em campo
+- Foco em praticidade, organização, rastreabilidade e comprovação do serviço executado
+
+16. IMPORTANTE
+- Preserve tudo o que já está funcionando no app atual
+- Não quebre funções existentes
+- Se necessário, reorganize a estrutura interna para suportar os novos recursos
+- Quero um sistema estável, limpo, profissional e pronto para testes reais com minha equipe

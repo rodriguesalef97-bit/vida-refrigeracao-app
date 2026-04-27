@@ -1,0 +1,100 @@
+Ajuste e amplie o sistema do aplicativo da Vida Refrigeração para incluir uma área completa de cadastro e gestão de colaboradores, integrada ao controle de acesso, permissões e ordens de serviço.
+
+Importante:
+Preserve tudo o que já está funcionando no app atual e apenas amplie a estrutura sem quebrar funcionalidades existentes.
+
+OBJETIVO:
+Quero criar uma área de cadastro de colaboradores da empresa, com separação por setor, dados completos de cada pessoa, controle de aniversário e integração com usuários, permissões e ordens de serviço.
+
+APLIQUE OS SEGUINTES AJUSTES:
+
+1. ÁREA DE CADASTRO DE COLABORADORES
+- Criar uma área administrativa chamada "Colaboradores", "Equipe" ou "Cadastro de Colaboradores"
+- Nessa área, o administrador deve conseguir cadastrar, editar, ativar e desativar colaboradores
+- Cada colaborador deve ter um cadastro individual
+
+2. DADOS DO COLABORADOR
+Cada colaborador deve poder ter os seguintes campos:
+- nome completo
+- e-mail
+- telefone
+- CPF
+- data de nascimento
+- setor
+- função / cargo
+- status (ativo ou inativo)
+
+3. SETORES DA EMPRESA
+Criar separação por setor, com pelo menos estas opções:
+- produção operacional
+- comercial
+- vendas
+- financeiro
+- administrador principal
+
+4. FUNÇÃO / CARGO
+Permitir registrar também a função ou cargo do colaborador, além do setor
+Exemplos:
+- técnico
+- ajudante
+- supervisor
+- comercial
+- vendedor
+- financeiro
+- administrador
+
+5. INTEGRAÇÃO COM USUÁRIOS DO SISTEMA
+- Cada colaborador pode estar vinculado a um usuário do sistema
+- O administrador deve conseguir criar ou vincular login individual para esse colaborador
+- O colaborador deve poder usar esse cadastro como base do seu acesso ao app
+- O sistema deve permitir associar permissões conforme perfil e necessidade
+
+6. INTEGRAÇÃO COM ORDEM DE SERVIÇO
+- Os colaboradores cadastrados na área de equipe devem aparecer como opções no campo de técnico responsável da OS
+- O campo de técnico responsável deve puxar os nomes cadastrados no sistema
+- Isso deve facilitar o vínculo do técnico à ordem de serviço
+
+7. CONTROLE DE ANIVERSÁRIOS
+- O sistema deve armazenar a data de nascimento de cada colaborador
+- Criar uma área ou aviso para mostrar os aniversariantes do dia
+- Quando for o aniversário de um colaborador, o app deve exibir um aviso no painel inicial ou em uma área visível do sistema
+- Exemplo: "Hoje é aniversário de Marcos Paulo"
+- Se possível, permitir exibir mensagem automática de parabéns no sistema
+- Se possível, criar uma lista de aniversários do mês
+
+8. PAINEL DE ALERTAS INTERNOS
+- Adicionar no painel inicial um espaço para lembretes ou alertas internos
+- Exibir aniversariante do dia
+- Exibir próximos aniversários
+- Organizar isso de forma visual, limpa e profissional
+
+9. CONTROLE DE ACESSO E PERMISSÕES
+- Manter a estrutura de permissões configuráveis pelo administrador
+- O administrador deve poder definir o que cada colaborador/usuário pode visualizar e acessar
+- O administrador deve conseguir editar permissões por usuário ou por perfil
+- O sistema deve continuar permitindo que o administrador libere ou restrinja visualização de OS, agenda e outras áreas
+
+10. ORGANIZAÇÃO DOS PERFIS
+Manter perfis como:
+- administrador principal
+- comercial / administrativo
+- técnico operacional
+- cliente
+
+E ao mesmo tempo manter a estrutura interna de setores da empresa:
+- produção operacional
+- comercial
+- vendas
+- financeiro
+- administrador principal
+
+11. INTERFACE
+- Deixar a área de cadastro de colaboradores organizada, simples e profissional
+- Layout mobile first, mas também funcional em computador
+- Manter identidade visual azul, cinza e branco
+
+12. IMPORTANTE
+- Preserve todas as funcionalidades já existentes
+- Não quebrar login, OS, agenda, checklist, fotos, assinaturas e permissões
+- Apenas ampliar a estrutura do sistema
+- Quero um sistema pronto para crescimento futuro, com organização real de equipe e gestão interna

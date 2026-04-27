@@ -1,0 +1,1804 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification for Vida Refrigeração
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: service-orders
+    description: Service order operations
+  - name: dashboard
+    description: Dashboard summary operations
+  - name: calendar
+    description: Calendar and schedule operations
+  - name: employees
+    description: Employee (team) management operations
+  - name: users
+    description: User and permissions management (admin)
+  - name: awards
+    description: Premiações (metas e prêmios concedidos)
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /service-orders:
+    get:
+      operationId: listServiceOrders
+      tags: [service-orders]
+      summary: List all service orders
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [open, in_progress, completed]
+        - name: technician
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of service orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceOrder"
+    post:
+      operationId: createServiceOrder
+      tags: [service-orders]
+      summary: Create a new service order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateServiceOrderBody"
+      responses:
+        "201":
+          description: Service order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceOrder"
+
+  /service-orders/{id}:
+    get:
+      operationId: getServiceOrder
+      tags: [service-orders]
+      summary: Get a service order by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Service order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceOrder"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateServiceOrder
+      tags: [service-orders]
+      summary: Update a service order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateServiceOrderBody"
+      responses:
+        "200":
+          description: Updated service order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceOrder"
+    delete:
+      operationId: deleteServiceOrder
+      tags: [service-orders]
+      summary: Delete a service order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /service-orders/{id}/start:
+    post:
+      operationId: startServiceOrder
+      tags: [service-orders]
+      summary: Inicia o cronômetro do serviço (registra hora de início)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Serviço iniciado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceOrder"
+
+  /service-orders/{id}/finish:
+    post:
+      operationId: finishServiceOrder
+      tags: [service-orders]
+      summary: Finaliza o serviço, valida obrigatórios e marca a OS como concluída
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Serviço finalizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceOrder"
+
+  /productivity:
+    get:
+      operationId: getProductivity
+      tags: [productivity]
+      summary: Relatório de produtividade por técnico
+      parameters:
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Data inicial (YYYY-MM-DD ou ISO)
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Data final (YYYY-MM-DD ou ISO)
+      responses:
+        "200":
+          description: Relatório agregado por técnico
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductivityReport"
+
+  /productivity/export:
+    get:
+      operationId: exportProductivity
+      tags: [productivity]
+      summary: Exporta relatório de produtividade em CSV
+      parameters:
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Arquivo CSV
+          content:
+            text/csv:
+              schema:
+                type: string
+
+  /award-goals:
+    get:
+      operationId: listAwardGoals
+      tags: [awards]
+      summary: Lista metas de premiação
+      parameters:
+        - name: period
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: Lista de metas
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/AwardGoal" }
+    post:
+      operationId: createAwardGoal
+      tags: [awards]
+      summary: Cria meta de premiação (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AwardGoalInput" }
+      responses:
+        "201":
+          description: Meta criada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AwardGoal" }
+
+  /award-goals/{id}:
+    put:
+      operationId: updateAwardGoal
+      tags: [awards]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AwardGoalInput" }
+      responses:
+        "200":
+          description: Meta atualizada
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AwardGoal" }
+    delete:
+      operationId: deleteAwardGoal
+      tags: [awards]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Removida
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+
+  /awards:
+    get:
+      operationId: listAwards
+      tags: [awards]
+      summary: Lista prêmios concedidos (admin vê todos; técnico vê apenas os seus)
+      parameters:
+        - name: period
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200":
+          description: Lista de prêmios
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Award" }
+    post:
+      operationId: createAward
+      tags: [awards]
+      summary: Registra prêmio (admin)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AwardInput" }
+      responses:
+        "201":
+          description: Prêmio registrado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Award" }
+
+  /awards/{id}:
+    delete:
+      operationId: deleteAward
+      tags: [awards]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: Removido
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageResponse" }
+
+  /awards/leaderboard:
+    get:
+      operationId: getAwardsLeaderboard
+      tags: [awards]
+      summary: Ranking + ganhadores das metas no período
+      parameters:
+        - name: period
+          in: query
+          required: true
+          schema: { type: string }
+          description: Período YYYY-MM
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AwardsLeaderboard" }
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary statistics
+      responses:
+        "200":
+          description: Summary statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/recent:
+    get:
+      operationId: getRecentServiceOrders
+      tags: [dashboard]
+      summary: Get most recent service orders
+      responses:
+        "200":
+          description: Recent service orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ServiceOrder"
+
+  /employees:
+    get:
+      operationId: listEmployees
+      tags: [employees]
+      summary: List all employees
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, inactive]
+        - name: sector
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: role
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Employee"
+    post:
+      operationId: createEmployee
+      tags: [employees]
+      summary: Create a new employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEmployeeBody"
+      responses:
+        "201":
+          description: Employee created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+
+  /employees/technicians:
+    get:
+      operationId: listTechnicians
+      tags: [employees]
+      summary: List active technicians for OS form (lightweight)
+      responses:
+        "200":
+          description: Active technicians
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    fullName:
+                      type: string
+                    role:
+                      type: string
+                  required: [id, fullName, role]
+
+  /employees/birthdays/today:
+    get:
+      operationId: getBirthdaysToday
+      tags: [employees]
+      summary: List employees whose birthday is today
+      responses:
+        "200":
+          description: List of employees with birthday today
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Employee"
+
+  /employees/birthdays/month:
+    get:
+      operationId: getBirthdaysMonth
+      tags: [employees]
+      summary: List employees with birthday in given month
+      parameters:
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        "200":
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Employee"
+
+  /employees/{id}:
+    get:
+      operationId: getEmployee
+      tags: [employees]
+      summary: Get an employee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Employee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateEmployee
+      tags: [employees]
+      summary: Update an employee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEmployeeBody"
+      responses:
+        "200":
+          description: Updated employee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+    delete:
+      operationId: deleteEmployee
+      tags: [employees]
+      summary: Delete an employee
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /clients:
+    get:
+      operationId: listClients
+      tags: [clients]
+      summary: List all clients
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, inactive]
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pessoa_fisica, pessoa_juridica]
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+    post:
+      operationId: createClient
+      tags: [clients]
+      summary: Create a new client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClientBody"
+      responses:
+        "201":
+          description: Client created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+
+  /clients/search:
+    get:
+      operationId: searchClients
+      tags: [clients]
+      summary: Search active clients (autocomplete)
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Matching clients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+
+  /clients/{id}:
+    get:
+      operationId: getClient
+      tags: [clients]
+      summary: Get a client by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateClient
+      tags: [clients]
+      summary: Update a client
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateClientBody"
+      responses:
+        "200":
+          description: Updated client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+    delete:
+      operationId: deleteClient
+      tags: [clients]
+      summary: Delete a client
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users (admin)
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserDetail"
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user details with permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetail"
+
+  /users/{id}/permissions:
+    put:
+      operationId: updateUserPermissions
+      tags: [users]
+      summary: Update user permission overrides (null to reset to role defaults)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePermissionsRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetail"
+
+  /users/{id}/role:
+    put:
+      operationId: updateUserRole
+      tags: [users]
+      summary: Update user role/profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRoleRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDetail"
+
+  /calendar:
+    get:
+      operationId: getCalendarOrders
+      tags: [calendar]
+      summary: Get service orders grouped by date for calendar view
+      parameters:
+        - name: year
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: month
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: technician
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Calendar events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CalendarDay"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        message:
+          type: string
+      required:
+        - user
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        permissions:
+          type: object
+          description: Per-area access level (none|view|edit|admin)
+          additionalProperties:
+            type: string
+      required:
+        - id
+        - username
+        - name
+        - role
+        - permissions
+
+    UserDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+        permissions:
+          type: object
+          additionalProperties:
+            type: string
+        customPermissions:
+          type: object
+          nullable: true
+          additionalProperties:
+            type: string
+        defaultPermissions:
+          type: object
+          additionalProperties:
+            type: string
+        employee:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            sector:
+              type: string
+            role:
+              type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - username
+        - name
+        - role
+        - permissions
+        - defaultPermissions
+        - createdAt
+
+    UpdatePermissionsRequest:
+      type: object
+      properties:
+        permissions:
+          type: object
+          nullable: true
+          additionalProperties:
+            type: string
+      required:
+        - permissions
+
+    UpdateUserRoleRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [admin, technician, commercial, financial]
+      required:
+        - role
+
+    ChecklistItem:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        checked:
+          type: boolean
+      required:
+        - id
+        - label
+        - checked
+
+    ServiceOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientAddress:
+          type: string
+        serviceType:
+          type: string
+          enum:
+            - installation
+            - maintenance
+            - repair
+            - cleaning
+            - inspection
+        technician:
+          type: string
+          description: "Lista legada — nome do técnico ou nomes separados por vírgula. Use 'technicians' (array)."
+        technicians:
+          type: array
+          items:
+            type: string
+          description: "Lista de técnicos responsáveis pela OS (suporta múltiplos)"
+        scheduledDate:
+          type: string
+        startTime:
+          type: string
+          nullable: true
+          description: "Horário de início no formato HH:MM"
+        endTime:
+          type: string
+          nullable: true
+          description: "Horário de finalização prevista no formato HH:MM"
+        reminderEnabled:
+          type: boolean
+        reminderMinutes:
+          type: integer
+          description: "Antecedência do lembrete em minutos (0,5,10,15,20,25,30,60)"
+        status:
+          type: string
+          enum:
+            - open
+            - in_progress
+            - completed
+        equipmentCapacity:
+          type: string
+        observations:
+          type: string
+          nullable: true
+        checklist:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChecklistItem"
+        photos:
+          type: array
+          items:
+            type: string
+        technicianSignature:
+          type: string
+          nullable: true
+        clientSignature:
+          type: string
+          nullable: true
+        serviceValue:
+          type: number
+          description: "Faturamento da OS em R$"
+        serviceStartedAt:
+          type: string
+          nullable: true
+          description: "Timestamp ISO de início real do serviço (cronômetro)"
+        serviceCompletedAt:
+          type: string
+          nullable: true
+          description: "Timestamp ISO de finalização real do serviço (cronômetro)"
+        durationMinutes:
+          type: integer
+          nullable: true
+          description: "Duração calculada (minutos) entre serviceStartedAt e serviceCompletedAt"
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - orderNumber
+        - clientName
+        - clientPhone
+        - clientAddress
+        - serviceType
+        - technician
+        - technicians
+        - scheduledDate
+        - reminderEnabled
+        - reminderMinutes
+        - status
+        - equipmentCapacity
+        - checklist
+        - photos
+        - serviceValue
+        - createdAt
+        - updatedAt
+
+    CreateServiceOrderBody:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientAddress:
+          type: string
+        serviceType:
+          type: string
+          enum:
+            - installation
+            - maintenance
+            - repair
+            - cleaning
+            - inspection
+        technician:
+          type: string
+          description: "Compatibilidade — preferir 'technicians'."
+        technicians:
+          type: array
+          items:
+            type: string
+          description: "Lista de técnicos responsáveis (1 ou mais)"
+        scheduledDate:
+          type: string
+        startTime:
+          type: string
+          nullable: true
+        endTime:
+          type: string
+          nullable: true
+        reminderEnabled:
+          type: boolean
+        reminderMinutes:
+          type: integer
+        equipmentCapacity:
+          type: string
+        observations:
+          type: string
+          nullable: true
+        checklist:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChecklistItem"
+        serviceValue:
+          type: number
+          description: "Faturamento da OS em R$ (>= 0)"
+      required:
+        - clientName
+        - clientPhone
+        - clientAddress
+        - serviceType
+        - technicians
+        - scheduledDate
+        - equipmentCapacity
+        - checklist
+
+    UpdateServiceOrderBody:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientAddress:
+          type: string
+        serviceType:
+          type: string
+          enum:
+            - installation
+            - maintenance
+            - repair
+            - cleaning
+            - inspection
+        technician:
+          type: string
+          description: "Compatibilidade — preferir 'technicians'."
+        technicians:
+          type: array
+          items:
+            type: string
+        scheduledDate:
+          type: string
+        startTime:
+          type: string
+          nullable: true
+        endTime:
+          type: string
+          nullable: true
+        reminderEnabled:
+          type: boolean
+        reminderMinutes:
+          type: integer
+        status:
+          type: string
+          enum:
+            - open
+            - in_progress
+            - completed
+        equipmentCapacity:
+          type: string
+        observations:
+          type: string
+          nullable: true
+        checklist:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChecklistItem"
+        photos:
+          type: array
+          items:
+            type: string
+        technicianSignature:
+          type: string
+          nullable: true
+        clientSignature:
+          type: string
+          nullable: true
+        serviceValue:
+          type: number
+
+    ProductivityRow:
+      type: object
+      properties:
+        technician:
+          type: string
+        services:
+          type: integer
+        hours:
+          type: number
+        points:
+          type: number
+        revenue:
+          type: number
+        productivity:
+          type: number
+          description: "Pontos por hora"
+        revenuePerHour:
+          type: number
+          description: "Faturamento por hora (R$/h)"
+      required:
+        - technician
+        - services
+        - hours
+        - points
+        - revenue
+        - productivity
+        - revenuePerHour
+
+    ProductivityReport:
+      type: object
+      properties:
+        from:
+          type: string
+          nullable: true
+        to:
+          type: string
+          nullable: true
+        totals:
+          type: object
+          properties:
+            services:
+              type: integer
+            hours:
+              type: number
+            points:
+              type: number
+            revenue:
+              type: number
+          required:
+            - services
+            - hours
+            - points
+            - revenue
+        rows:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductivityRow"
+      required:
+        - totals
+        - rows
+
+    AwardGoal:
+      type: object
+      properties:
+        id: { type: integer }
+        period: { type: string }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        pointsRequired: { type: number }
+        prizeValue: { type: number }
+        prizeDescription: { type: string, nullable: true }
+        status: { type: string }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+      required: [id, period, title, pointsRequired, prizeValue, status]
+
+    AwardGoalInput:
+      type: object
+      properties:
+        period: { type: string }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        pointsRequired: { type: number }
+        prizeValue: { type: number }
+        prizeDescription: { type: string, nullable: true }
+        status: { type: string, nullable: true }
+      required: [period, title, pointsRequired, prizeValue]
+
+    Award:
+      type: object
+      properties:
+        id: { type: integer }
+        technicianName: { type: string }
+        employeeId: { type: integer, nullable: true }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        awardedAt: { type: string }
+        value: { type: number }
+        goalId: { type: integer, nullable: true }
+        createdAt: { type: string }
+      required: [id, technicianName, title, awardedAt, value]
+
+    AwardInput:
+      type: object
+      properties:
+        technicianName: { type: string }
+        employeeId: { type: integer, nullable: true }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        awardedAt: { type: string }
+        value: { type: number }
+        goalId: { type: integer, nullable: true }
+      required: [technicianName, title, awardedAt, value]
+
+    AwardsLeaderboardWinner:
+      type: object
+      properties:
+        goalId: { type: integer }
+        goalTitle: { type: string }
+        pointsRequired: { type: number }
+        prizeValue: { type: number }
+        prizeDescription: { type: string, nullable: true }
+        winners:
+          type: array
+          items:
+            type: object
+            properties:
+              technician: { type: string }
+              points: { type: number }
+            required: [technician, points]
+      required: [goalId, goalTitle, pointsRequired, prizeValue, winners]
+
+    AwardsLeaderboard:
+      type: object
+      properties:
+        period: { type: string }
+        ranking:
+          type: array
+          items: { $ref: "#/components/schemas/ProductivityRow" }
+        goals:
+          type: array
+          items: { $ref: "#/components/schemas/AwardsLeaderboardWinner" }
+      required: [period, ranking, goals]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        openOrders:
+          type: integer
+        inProgressOrders:
+          type: integer
+        completedOrders:
+          type: integer
+        todayOrders:
+          type: integer
+        technicianBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              technician:
+                type: string
+              count:
+                type: integer
+            required:
+              - technician
+              - count
+        serviceTypeBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              serviceType:
+                type: string
+              count:
+                type: integer
+            required:
+              - serviceType
+              - count
+      required:
+        - totalOrders
+        - openOrders
+        - inProgressOrders
+        - completedOrders
+        - todayOrders
+        - technicianBreakdown
+        - serviceTypeBreakdown
+
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        cpf:
+          type: string
+          nullable: true
+        birthDate:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          enum:
+            - producao_operacional
+            - comercial
+            - vendas
+            - financeiro
+            - administrador_principal
+        role:
+          type: string
+          enum:
+            - tecnico
+            - ajudante
+            - supervisor
+            - comercial
+            - vendedor
+            - financeiro
+            - administrador
+        status:
+          type: string
+          enum: [active, inactive]
+        notes:
+          type: string
+          nullable: true
+        userId:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - fullName
+        - sector
+        - role
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateEmployeeBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        cpf:
+          type: string
+          nullable: true
+        birthDate:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          enum:
+            - producao_operacional
+            - comercial
+            - vendas
+            - financeiro
+            - administrador_principal
+        role:
+          type: string
+          enum:
+            - tecnico
+            - ajudante
+            - supervisor
+            - comercial
+            - vendedor
+            - financeiro
+            - administrador
+        status:
+          type: string
+          enum: [active, inactive]
+        notes:
+          type: string
+          nullable: true
+        createUser:
+          type: boolean
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - fullName
+        - sector
+        - role
+
+    UpdateEmployeeBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        cpf:
+          type: string
+          nullable: true
+        birthDate:
+          type: string
+          nullable: true
+        sector:
+          type: string
+          enum:
+            - producao_operacional
+            - comercial
+            - vendas
+            - financeiro
+            - administrador_principal
+        role:
+          type: string
+          enum:
+            - tecnico
+            - ajudante
+            - supervisor
+            - comercial
+            - vendedor
+            - financeiro
+            - administrador
+        status:
+          type: string
+          enum: [active, inactive]
+        notes:
+          type: string
+          nullable: true
+        userId:
+          type: integer
+          nullable: true
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        clientType:
+          type: string
+          enum: [pessoa_fisica, pessoa_juridica]
+        document:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        cep:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        addressNumber:
+          type: string
+          nullable: true
+        addressComplement:
+          type: string
+          nullable: true
+        neighborhood:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive]
+        origin:
+          type: string
+          enum: [manual, conta_azul]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - name
+        - clientType
+        - document
+        - status
+        - origin
+        - createdAt
+        - updatedAt
+
+    CreateClientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        clientType:
+          type: string
+          enum: [pessoa_fisica, pessoa_juridica]
+        document:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        cep:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        addressNumber:
+          type: string
+          nullable: true
+        addressComplement:
+          type: string
+          nullable: true
+        neighborhood:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive]
+        origin:
+          type: string
+          enum: [manual, conta_azul]
+      required:
+        - name
+        - clientType
+        - document
+
+    UpdateClientBody:
+      type: object
+      properties:
+        name:
+          type: string
+        clientType:
+          type: string
+          enum: [pessoa_fisica, pessoa_juridica]
+        document:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        cep:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        addressNumber:
+          type: string
+          nullable: true
+        addressComplement:
+          type: string
+          nullable: true
+        neighborhood:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive]
+        origin:
+          type: string
+          enum: [manual, conta_azul]
+
+    CalendarDay:
+      type: object
+      properties:
+        date:
+          type: string
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/ServiceOrder"
+      required:
+        - date
+        - orders

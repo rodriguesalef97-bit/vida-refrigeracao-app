@@ -1,0 +1,84 @@
+Ajuste o sistema da Vida Refrigeração para que, na criação e edição da ordem de serviço, existam campos completos de agendamento com horário e lembretes automáticos.
+
+IMPORTANTE:
+Preserve tudo o que já está funcionando no aplicativo e apenas amplie a estrutura da OS e da agenda.
+
+OBJETIVO
+Quero que toda ordem de serviço tenha informações completas de agendamento, para que a agenda diária fique organizada e para que o sistema possa lembrar o usuário antes do horário do atendimento.
+
+ADICIONAR NA CRIAÇÃO E EDIÇÃO DA ORDEM DE SERVIÇO:
+
+1. CAMPO DE DATA
+- manter o campo de data da ordem de serviço
+- garantir que ele esteja bem integrado com a agenda
+
+2. CAMPO DE HORÁRIO DE INÍCIO
+- adicionar campo de horário de início do atendimento
+- esse horário deve aparecer na agenda do dia
+- esse horário deve ser obrigatório para serviços agendados
+
+3. CAMPO DE HORÁRIO DE FINALIZAÇÃO
+- adicionar campo de horário de finalização prevista
+- esse horário deve ajudar na organização da agenda e visualização da duração do atendimento
+- permitir edição desse horário
+
+4. CAMPO DE LEMBRETE
+- adicionar uma opção de lembrete na OS
+- permitir ativar ou desativar o lembrete
+- quando ativado, permitir escolher com quanto tempo de antecedência o aplicativo deve avisar
+
+5. OPÇÕES DE ANTECEDÊNCIA DO LEMBRETE
+Criar opções como:
+- avisar no horário
+- avisar 5 minutos antes
+- avisar 10 minutos antes
+- avisar 15 minutos antes
+- avisar 20 minutos antes
+- avisar 25 minutos antes
+- avisar 30 minutos antes
+- avisar 1 hora antes
+
+6. NOTIFICAÇÃO / ALERTA
+- quando o lembrete estiver ativado, o aplicativo deve disparar uma notificação, aviso ou alerta no horário configurado
+- exemplo:
+  "Daqui 15 minutos você tem uma ordem de serviço agendada"
+- mostrar também informações como:
+  - cliente
+  - horário
+  - tipo de serviço
+  - local
+
+7. INTEGRAÇÃO COM AGENDA
+- o horário de início e finalização devem aparecer na agenda
+- a agenda do dia deve exibir os serviços ordenados pelo horário de início
+- cada card da agenda deve mostrar:
+  - horário de início
+  - horário de finalização, se existir
+  - cliente
+  - local
+  - técnicos vinculados
+  - tipo de serviço
+  - status
+
+8. EXPERIÊNCIA PRÁTICA
+- deixar o preenchimento desses campos simples e rápido no celular
+- usar seletores de data e horário fáceis de usar no iPhone e Android
+- deixar a configuração de lembrete prática e intuitiva
+
+9. MÚLTIPLOS TÉCNICOS
+- manter a possibilidade de vincular mais de um técnico à mesma OS
+- esses técnicos devem receber ou visualizar corretamente o agendamento e o lembrete, conforme as permissões e regras do sistema
+
+10. PERMISSÕES
+- a visualização e edição dos horários e lembretes devem respeitar as permissões definidas pelo administrador
+- o administrador deve poder decidir quem pode criar, editar ou apenas visualizar esses agendamentos
+
+11. DESEMPENHO
+- adicionar esses recursos sem deixar o aplicativo mais pesado
+- manter carregamento rápido no celular
+- otimizar a agenda e os lembretes para uso diário em campo
+
+12. IMPORTANTE
+- preserve todas as funções já existentes
+- não quebrar OS, agenda, checklist, fotos, assinaturas, equipe e permissões
+- quero uma agenda profissional, com horário, duração e lembrete automático para cada ordem de serviço
